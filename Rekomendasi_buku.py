@@ -2,14 +2,14 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import time
 from keras.models import load_model
 
-
 # Memuat model
-model = load_model('./model.keras')
+model = tf.keras.models.load_model('./model.keras')
 
 Dataset_buku = './data_sets'
 
