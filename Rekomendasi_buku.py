@@ -8,7 +8,7 @@ import time
 from keras.models import load_model
 
 # Memuat model
-model = load_model('./model.keras')
+model = tf.keras.models.load_model()
 
 Dataset_buku = './data_sets'
 
