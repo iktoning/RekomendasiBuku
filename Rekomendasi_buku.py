@@ -52,6 +52,34 @@ def prepare_data():
 
     # Menghapus missing value dengan fungsi dropna()
     book_rating = all_book_rating.dropna()
+    # Memeriksa kembali Missing Value
+    book_rating.isnull().sum()
+
+    # Menghapus data yang sama berdasarkan book id
+    preparation = book_rating.drop_duplicates('book_id')
+
+    # Mengonversi data series menjadi dalam bentuk list
+    book_id = preparation['book_id'].tolist()
+    book_title = preparation['title'].tolist()
+    book_author = preparation['authors'].tolist()
+    book_year = preparation['original_publication_year'].tolist()
+
+    # Membuat dictionary untuk data 'book_id', 'book_title', 'book_author' dan 'book_year'
+    book_data = pd.DataFrame({
+        'id_buku': book_id,
+        'judul_buku': book_title,
+        'penulis': book_author,
+        'tahun_rilis': book_year
+    })
+
+    tf = TfidfVectorizer()
+    tf.fit(book_data['penulis'])
+    tfidf_matrix = tf.fit_transform(book_data['penulis'])
+
+    cosine_sim = cosine_similarity(tfidf_matrix)
+    cosine_sim_df = pd.DataFrame(cosine_sim, index=book_data['judul_buku'], columns=book_data['judul_buku'])
+
+    return book_data, cosine_sim_df
 
 #def book_recomend
 
