@@ -14,6 +14,44 @@ Dataset_buku = './data_sets'
 
 @st.cache_data
 #def prepare_data
+def prepare_data():
+    
+    Dataset_buku = './data_sets'
+    with st.spinner('Memuat data...'):
+        time.sleep(3)  # Durasi loading selama 3 detik
+        buku = pd.read_csv(Dataset_buku+'/books.csv')
+        genre_buku = pd.read_csv(Dataset_buku+'/book_tags.csv')
+        ket_genre = pd.read_csv(Dataset_buku+'/tags.csv')
+        user_read = pd.read_csv(Dataset_buku+'/to_read.csv')
+        data_rating = pd.read_csv(Dataset_buku+'/ratings.csv')
+
+    # Menggabungkan seluruh TagID pada kategori buku
+    semua_tag = np.concatenate((
+        genre_buku.tag_id.unique(),
+        ket_genre.tag_id.unique()
+    ))
+
+    # Mengurutkan data dan menghapus data yang sama
+    semua_tag = np.sort(np.unique(semua_tag))
+
+    print('Jumlah seluruh data genre berdasarkan tag_id:', len(semua_tag))
+
+    data_buku = pd.merge(data_rating, buku , on='book_id', how='left')
+    data_buku.isnull().sum()
+
+    # Menghitung jumlah rating berdasarkan book_id
+    rating_per_book = data_buku.groupby('book_id').sum()
+
+    all_rating = data_rating
+
+    # Menggabungkan data rating dengan penulis, judul, dan tahun buku berdasarkan book_id
+    all_book_rating = pd.merge(data_rating, data_buku[['book_id', 'authors', 'title', 'original_publication_year']], on='book_id', how='left')
+
+    # Memeriksa missing value
+    all_book_rating.isnull().sum()
+
+    # Menghapus missing value dengan fungsi dropna()
+    book_rating = all_book_rating.dropna()
 
 #def book_recomend
 
