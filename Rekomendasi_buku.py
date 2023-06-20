@@ -82,6 +82,11 @@ def prepare_data():
     return book_data, cosine_sim_df
 
 #def book_recomend
+def book_recommendations(judul_buku, similarity_data, items, k=5):
+    index = similarity_data.loc[:, judul_buku].to_numpy().argpartition(range(-1, -k, -1))
+    closest = similarity_data.columns[index[-1:-(k+2):-1]]
+    closest = closest.drop(judul_buku, errors='ignore')
+    return pd.DataFrame(closest).merge(items).head(k)
 
 def get_user_data(user_id, book_data):
     
